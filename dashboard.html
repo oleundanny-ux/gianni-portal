@@ -1,0 +1,17 @@
+const ensureAuth = (req, res, next) => {
+  if (req.isAuthenticated()) return next();
+  res.redirect('/login');
+};
+
+const ensureAdmin = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.isAdmin) return next();
+  if (req.isAuthenticated()) return res.status(403).json({ error: 'Access denied. Admin only.' });
+  res.redirect('/login');
+};
+
+const ensureGuest = (req, res, next) => {
+  if (!req.isAuthenticated()) return next();
+  res.redirect('/dashboard');
+};
+
+module.exports = { ensureAuth, ensureAdmin, ensureGuest };
